@@ -3,259 +3,462 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bala Kumaran — Founder & CEO</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;475;600;700&display=swap" rel="stylesheet" />
+  <script>history.scrollRestoration = 'manual'; window.scrollTo(0, 0);</script>
+  <title>Bala Kumaran — Founder · Designer · Builder</title>
+  <meta name="description" content="Bala Kumaran — Founder, designer, and builder from Kerala, India. Building ventures at the intersection of design, AI, and product." />
+
+  <!-- Preload critical fonts -->
+  <link rel="preload" href="/fonts/sora/sora-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/sora/sora-700.woff2" as="font" type="font/woff2" crossorigin />
+
   <style>
-    /* ─── Design Tokens ─────────────────────────────────────────────────── */
-    :root {
-      --bg-void:        #06102E;
-      --bg-ocean:       #0B3C5D;
-      --gold:           #CBA96A;
-      --text-primary:   #F0EDE8;
-      --text-muted:     rgba(240, 237, 232, 0.45);
-      --gold-faint:     rgba(203, 169, 106, 0.12);
-      --gold-mid:       rgba(203, 169, 106, 0.35);
-      --glass-bg:       rgba(11, 60, 93, 0.18);
-      --glass-border:   rgba(203, 169, 106, 0.12);
-      --max-content:    960px;
-      --max-container:  1280px;
-      --nav-h:          64px;
+    /* ─── Self-hosted Sora Font ─────────────────────────────────────────── */
+    @font-face {
+      font-family: 'Sora';
+      src: url('/fonts/sora/sora-300.woff2') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sora';
+      src: url('/fonts/sora/sora-400.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sora';
+      src: url('/fonts/sora/sora-600.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sora';
+      src: url('/fonts/sora/sora-700.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
     }
 
-    /* ─── Reset ─────────────────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ─── Design Tokens ─────────────────────────────────────────────────── */
+    :root {
+      --bg-canvas:          #FAF9F7;
+      --bg-dark:            #121212;
+      --text-primary:       #121212;
+      --text-secondary:     rgba(18,18,18,0.64);
+      --text-muted:         rgba(18,18,18,0.45);
+      --text-on-dark:       #F5F3EF;
+      --text-on-dark-muted: rgba(245,243,239,0.5);
+      --accent:             #121212;
+      --iridescent:         linear-gradient(90deg, #a78bfa, #60a5fa, #34d399, #fbbf24, #f87171, #a78bfa);
+      --max-container:      1280px;
+      --max-content:        960px;
+      --nav-h:              68px;
+    }
 
-    html { scroll-behavior: smooth; }
+    /* ─── Reset & Base ──────────────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg-void);
+    html {
+      font-family: 'Sora', system-ui, -apple-system, sans-serif;
+      background: var(--bg-canvas);
       color: var(--text-primary);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
+      /* overflow-x: clip keeps horizontal clipping WITHOUT creating a scroll container */
+      overflow-x: clip;
+      /* No scroll-behavior: smooth — Lenis owns all scroll smoothing */
     }
 
-    /* ─── Grain Overlay ─────────────────────────────────────────────────── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      opacity: 0.04;
-      mix-blend-mode: overlay;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      background-repeat: repeat;
-      background-size: 300px 300px;
+    body {
+      /* overflow-x: hidden on body promotes it to scroll container (breaks Lenis) — removed */
     }
 
-    /* ─── WebGL Canvas ──────────────────────────────────────────────────── */
-    #gl-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -1;
-      pointer-events: none;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    /* ─── Layout Helpers ─────────────────────────────────────────────────── */
+    /* ─── Container ─────────────────────────────────────────────────────── */
     .container {
       max-width: var(--max-container);
       margin: 0 auto;
-      padding: 0 32px;
+      padding: 0 48px;
     }
-    .content {
+
+    .container--content {
       max-width: var(--max-content);
       margin: 0 auto;
+      padding: 0 48px;
     }
 
-    /* ─── Nav ────────────────────────────────────────────────────────────── */
+    /* ─── Section Label ─────────────────────────────────────────────────── */
+    .section-label {
+      font-weight: 600;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 56px;
+    }
+
+    .section-label--dark {
+      color: var(--text-on-dark-muted);
+    }
+
+    /* ─── Iridescent Divider ─────────────────────────────────────────────── */
+    .iridescent-divider {
+      height: 1px;
+      background: var(--iridescent);
+      background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .iridescent-divider.visible {
+      opacity: 1;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 0% center; }
+      100% { background-position: -200% center; }
+    }
+
+    /* ─── NAV ───────────────────────────────────────────────────────────── */
     nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--nav-h);
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
+      height: var(--nav-h);
       display: flex;
       align-items: center;
+      transition: background 0.3s ease, border-color 0.3s ease;
+      border-bottom: 1px solid transparent;
     }
 
-    nav .container {
-      width: 100%;
+    nav.scrolled {
+      background: rgba(250, 249, 247, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom-color: rgba(18, 18, 18, 0.08);
+    }
+
+    .nav-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      width: 100%;
     }
 
-    .nav-logo {
-      font-size: 1.25rem;
+    .nav-wordmark {
       font-weight: 700;
-      color: var(--gold);
-      letter-spacing: 0.08em;
-      text-decoration: none;
-      line-height: 1;
-      border: 1.5px solid var(--gold-mid);
-      padding: 6px 12px;
-      border-radius: 6px;
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .nav-logo:hover {
-      background: var(--gold-faint);
-      border-color: var(--gold);
+      font-size: 0.875rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-primary);
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 36px;
+      gap: 40px;
       list-style: none;
     }
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--text-primary); }
 
-    /* ─── Hero ───────────────────────────────────────────────────────────── */
-    #hero {
+    .nav-links a {
+      font-weight: 300;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+
+    /* ─── HERO ───────────────────────────────────────────────────────────── */
+    .hero {
       min-height: 100vh;
       display: flex;
-      align-items: center;
-      position: relative;
-      z-index: 2;
+      flex-direction: column;
+      justify-content: center;
       padding-top: var(--nav-h);
+      background: var(--bg-canvas);
     }
 
     .hero-inner {
-      padding: 60px 0 80px;
+      padding: 80px 48px 100px;
+      max-width: var(--max-container);
+      margin: 0 auto;
+      width: 100%;
     }
 
     .hero-eyebrow {
-      font-size: 0.75rem;
       font-weight: 600;
-      letter-spacing: 0.18em;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      font-variant: small-caps;
-      color: var(--gold);
-      margin-bottom: 28px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .hero-eyebrow::before {
-      content: '';
-      display: inline-block;
-      width: 32px;
-      height: 1px;
-      background: var(--gold);
-      opacity: 0.6;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
     }
 
     .hero-h1 {
-      font-size: clamp(60px, 9vw, 120px);
-      line-height: 0.92;
+      font-size: clamp(72px, 10vw, 140px);
+      line-height: 0.88;
       letter-spacing: -0.03em;
-      margin-bottom: 36px;
+      margin-bottom: 40px;
     }
-    .hero-h1 .line-a {
-      display: block;
+
+    .hero-h1 .line-bold {
       font-weight: 700;
+      display: block;
       color: var(--text-primary);
     }
-    .hero-h1 .line-b {
-      display: block;
-      font-weight: 200;
+
+    .hero-h1 .line-light {
+      font-weight: 300;
       font-style: italic;
+      display: block;
       color: var(--text-primary);
-      opacity: 0.88;
+    }
+
+    .hero-h1 .char {
+      display: inline-block;
     }
 
     .hero-tagline {
-      font-size: clamp(1rem, 1.6vw, 1.2rem);
       font-weight: 300;
-      color: var(--text-muted);
-      max-width: 520px;
-      line-height: 1.65;
-      margin-bottom: 52px;
-      letter-spacing: 0.01em;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 48px;
     }
 
     .hero-ctas {
       display: flex;
       align-items: center;
-      gap: 28px;
+      gap: 32px;
       flex-wrap: wrap;
     }
 
-    .btn-gold {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: transparent;
-      border: 1.5px solid var(--gold);
-      color: var(--gold);
-      padding: 14px 28px;
-      border-radius: 8px;
+    .btn-primary {
+      display: inline-block;
+      font-family: 'Sora', sans-serif;
+      font-weight: 500;
       font-size: 0.875rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-decoration: none;
-      transition: background 0.2s, color 0.2s;
+      color: var(--text-primary);
+      border: 1.5px solid var(--text-primary);
+      padding: 14px 28px;
+      border-radius: 6px;
+      transition: background 0.25s ease, color 0.25s ease;
       cursor: pointer;
     }
-    .btn-gold:hover {
-      background: var(--gold);
-      color: var(--bg-void);
+
+    .btn-primary:hover {
+      background: var(--text-primary);
+      color: var(--bg-canvas);
     }
 
-    .link-muted {
-      color: var(--text-muted);
-      text-decoration: none;
+    .btn-text {
+      font-weight: 300;
       font-size: 0.875rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      transition: color 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .link-muted:hover { color: var(--text-primary); }
-
-    /* ─── Section shared ─────────────────────────────────────────────────── */
-    section {
-      position: relative;
-      z-index: 2;
+      color: var(--text-secondary);
+      transition: color 0.2s ease;
     }
 
-    .section-label {
-      font-size: 0.7rem;
+    .btn-text:hover {
+      color: var(--text-primary);
+    }
+
+    /* ─── SKILLS TICKER ──────────────────────────────────────────────────── */
+    .ticker {
+      padding: 28px 0;
+      overflow: hidden;
+      border-top: 1px solid rgba(18, 18, 18, 0.08);
+      border-bottom: 1px solid rgba(18, 18, 18, 0.08);
+      background: var(--bg-canvas);
+    }
+
+    .ticker-row {
+      display: flex;
+      white-space: nowrap;
+      margin-bottom: 12px;
+    }
+
+    .ticker-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .ticker-track {
+      display: flex;
+      animation: ticker 28s linear infinite;
+    }
+
+    .ticker-track--reverse {
+      animation: ticker-reverse 24s linear infinite;
+    }
+
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes ticker-reverse {
+      0%   { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
+    }
+
+    .ticker-item {
       font-weight: 600;
-      letter-spacing: 0.2em;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      font-variant: small-caps;
-      color: var(--gold);
-      margin-bottom: 48px;
+      padding: 0 20px;
+      background: var(--iridescent);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+
+    .ticker-sep {
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: rgba(18, 18, 18, 0.25);
+      padding: 0 4px;
+      -webkit-text-fill-color: rgba(18, 18, 18, 0.25);
+      background: none;
+      animation: none;
+    }
+
+    /* ─── STATS BAR ──────────────────────────────────────────────────────── */
+    .stats {
+      padding: 80px 0;
+      background: var(--bg-canvas);
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      align-items: flex-start;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-weight: 700;
+      font-size: clamp(3rem, 6vw, 5rem);
+      color: var(--text-primary);
+      line-height: 1;
+      display: block;
+    }
+
+    .stat-label {
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 8px;
+      display: block;
+    }
+
+    /* ─── SERVICES (DARK) ────────────────────────────────────────────────── */
+    .services {
+      background: var(--bg-dark);
+      padding: 120px 0;
+    }
+
+    .services .section-label {
+      color: var(--text-on-dark-muted);
+    }
+
+    .services-list {
+      list-style: none;
+    }
+
+    .services-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-    }
-    .section-label::after {
-      content: '';
-      flex: 1;
-      max-width: 80px;
-      height: 1px;
-      background: var(--gold);
-      opacity: 0.35;
+      gap: 32px;
+      padding: 32px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: default;
+      transition: all 0.3s ease;
     }
 
-    /* ─── Projects ───────────────────────────────────────────────────────── */
-    #projects {
+    .services-item:last-child {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .services-item:hover {
+      transform: translateX(8px);
+    }
+
+    .services-item:hover .services-title {
+      color: var(--text-on-dark);
+    }
+
+    .services-item:hover .services-arrow {
+      letter-spacing: 0.12em;
+    }
+
+    .services-num {
+      font-weight: 300;
+      font-size: 0.8rem;
+      color: var(--text-on-dark-muted);
+      min-width: 36px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .services-title {
+      font-weight: 600;
+      font-size: 1.5rem;
+      color: rgba(245, 243, 239, 0.7);
+      flex: 1;
+      transition: color 0.3s ease;
+    }
+
+    .services-arrow {
+      font-size: 1.2rem;
+      color: var(--text-on-dark-muted);
+      transition: letter-spacing 0.3s ease;
+    }
+
+    /* ─── PROJECTS ───────────────────────────────────────────────────────── */
+    .projects {
+      background: var(--bg-canvas);
       padding: 120px 0;
     }
 
@@ -266,627 +469,617 @@
     }
 
     .project-card {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 36px 32px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      cursor: default;
-    }
-    .project-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(203, 169, 106, 0.38);
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(203, 169, 106, 0.12);
+      background: #ffffff;
+      border: 1px solid rgba(18, 18, 18, 0.1);
+      border-radius: 12px;
+      padding: 36px 28px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     }
 
-    .project-card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+      border-color: rgba(18, 18, 18, 0.2);
     }
 
     .project-tag {
+      display: inline-block;
+      font-weight: 600;
       font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--gold);
-      background: rgba(203, 169, 106, 0.1);
-      border: 1px solid rgba(203, 169, 106, 0.18);
+      background: rgba(18, 18, 18, 0.06);
+      border: 1px solid rgba(18, 18, 18, 0.1);
+      border-radius: 100px;
       padding: 4px 10px;
-      border-radius: 4px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
     }
 
-    .project-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: rgba(203, 169, 106, 0.08);
-      border: 1px solid rgba(203, 169, 106, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
-    }
-
-    .project-card h3 {
+    .project-title {
+      font-weight: 700;
       font-size: 1.25rem;
-      font-weight: 600;
       color: var(--text-primary);
-      letter-spacing: -0.02em;
-      line-height: 1.25;
+      margin-bottom: 12px;
     }
 
-    .project-card p {
-      font-size: 0.875rem;
+    .project-desc {
       font-weight: 300;
-      color: var(--text-muted);
+      font-size: 0.875rem;
+      color: var(--text-secondary);
       line-height: 1.65;
+      margin-bottom: 28px;
     }
 
     .project-link {
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: var(--text-primary);
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      color: var(--gold);
-      text-decoration: none;
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      margin-top: auto;
-      transition: gap 0.2s;
-    }
-    .project-link:hover { gap: 10px; }
-    .project-link svg {
-      width: 12px;
-      height: 12px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      transition: transform 0.2s;
-    }
-    .project-card:hover .project-link svg {
-      transform: translate(2px, -2px);
+      transition: gap 0.2s ease;
     }
 
-    /* ─── About ──────────────────────────────────────────────────────────── */
-    #about {
+    .project-link:hover {
+      gap: 10px;
+    }
+
+    .project-link .arrow {
+      transition: transform 0.2s ease;
+    }
+
+    .project-link:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    /* ─── TESTIMONIALS (DARK) ────────────────────────────────────────────── */
+    .testimonials {
+      background: var(--bg-dark);
       padding: 120px 0;
-      border-top: 1px solid rgba(240, 237, 232, 0.06);
+      text-align: center;
     }
 
-    .about-grid {
+    .testimonials .section-label {
+      color: var(--text-on-dark-muted);
+    }
+
+    .testimonial-card {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .testimonial-quote-icon {
+      margin-bottom: 32px;
+      opacity: 0.15;
+    }
+
+    .testimonial-text {
+      font-weight: 300;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--text-on-dark);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .testimonial-attribution {
+      font-weight: 400;
+      font-size: 0.8rem;
+      color: var(--text-on-dark-muted);
+    }
+
+    /* ─── PHILOSOPHY ─────────────────────────────────────────────────────── */
+    .philosophy {
+      background: var(--bg-canvas);
+      padding: 120px 0;
+    }
+
+    .philosophy-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 80px;
       align-items: start;
     }
 
-    .about-heading {
-      font-size: clamp(2rem, 4vw, 3.5rem);
+    .philosophy-display {
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      line-height: 1;
+    }
+
+    .philosophy-display .d-bold {
       font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
+      display: block;
       color: var(--text-primary);
     }
-    .about-heading em {
+
+    .philosophy-display .d-light {
+      font-weight: 300;
       font-style: italic;
-      font-weight: 300;
-      color: var(--gold);
+      display: block;
+      color: var(--text-secondary);
     }
 
-    .about-body {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-    .about-body p {
+    .philosophy-body p {
+      font-weight: 300;
       font-size: 1rem;
-      font-weight: 300;
-      color: var(--text-muted);
-      line-height: 1.8;
-    }
-    .about-body p strong {
-      color: var(--text-primary);
-      font-weight: 500;
+      color: var(--text-secondary);
+      line-height: 1.85;
+      margin-bottom: 24px;
     }
 
-    /* ─── Footer ─────────────────────────────────────────────────────────── */
-    footer {
-      position: relative;
-      z-index: 2;
-      padding: 48px 0;
-      border-top: 1px solid rgba(240, 237, 232, 0.06);
+    .philosophy-body p:last-child {
+      margin-bottom: 0;
     }
-    footer .container {
+
+    /* ─── FOOTER ─────────────────────────────────────────────────────────── */
+    footer {
+      background: var(--bg-canvas);
+      padding: 56px 0;
+      border-top: 1px solid rgba(18, 18, 18, 0.08);
+    }
+
+    .footer-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 20px;
     }
+
     .footer-email {
-      color: var(--gold);
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 475;
-      letter-spacing: 0.04em;
       display: flex;
       align-items: center;
-      gap: 8px;
-      transition: opacity 0.2s;
+      gap: 10px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      transition: opacity 0.2s ease;
     }
-    .footer-email:hover { opacity: 0.75; }
+
+    .footer-email:hover {
+      opacity: 0.6;
+    }
+
     .footer-copy {
-      color: var(--text-muted);
-      font-size: 0.8rem;
       font-weight: 300;
-      letter-spacing: 0.04em;
+      font-size: 0.8rem;
+      color: var(--text-muted);
     }
 
-    /* ─── Dividers / Decoration ──────────────────────────────────────────── */
-    .section-divider {
-      width: 1px;
-      height: 80px;
-      background: linear-gradient(to bottom, transparent, rgba(203,169,106,0.3), transparent);
-      margin: 0 auto 64px;
+    /* ─── Reveal Animation Classes ───────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      will-change: opacity, transform;
     }
-
-    /* ─── No-WebGL fallback ──────────────────────────────────────────────── */
-    body.no-webgl {
-      background: linear-gradient(135deg, #06102E 0%, #0B3C5D 60%, #06102E 100%);
+    .hero-enter {
+      opacity: 0;
+      transform: translateY(20px);
+      will-change: opacity, transform;
     }
-    body.no-webgl #gl-canvas { display: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .hero-enter { opacity: 1; transform: none; }
+    }
 
     /* ─── Responsive ─────────────────────────────────────────────────────── */
     @media (max-width: 900px) {
       .projects-grid {
         grid-template-columns: 1fr;
         max-width: 480px;
+        margin: 0 auto;
       }
-      .about-grid {
+
+      .philosophy-grid {
         grid-template-columns: 1fr;
         gap: 48px;
       }
     }
 
     @media (max-width: 768px) {
-      .container { padding: 0 20px; }
-      nav .container { padding: 0 20px; }
-      .nav-links { gap: 24px; }
-      #projects { padding: 80px 0; }
-      #about { padding: 80px 0; }
-      .hero-inner { padding: 40px 0 60px; }
+      .container,
+      .container--content {
+        padding: 0 20px;
+      }
+
+      .hero-inner {
+        padding: 60px 20px 80px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-hamburger {
+        display: flex;
+      }
+
+      .stats-row {
+        flex-direction: column;
+        gap: 48px;
+        align-items: center;
+      }
+
+      .services-item {
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .services-arrow {
+        margin-left: auto;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
 
-    @media (max-width: 480px) {
-      .nav-links { gap: 16px; }
-      .nav-links li:first-child { display: none; }
-      .hero-ctas { flex-direction: column; align-items: flex-start; gap: 20px; }
-    }
-
-    /* ─── Scroll fade-in animation ───────────────────────────────────────── */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    /* ─── Reduced Motion ─────────────────────────────────────────────────── */
     @media (prefers-reduced-motion: reduce) {
-      .fade-up { opacity: 1; transform: none; transition: none; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- WebGL Aurora Canvas -->
-  <canvas id="gl-canvas" aria-hidden="true"></canvas>
-
-  <!-- ─── Nav ──────────────────────────────────────────────────────────── -->
-  <nav>
-    <div class="container">
-      <a href="#" class="nav-logo" aria-label="Bala Kumaran — Home">BK</a>
+  <!-- ─── NAV ──────────────────────────────────────────────────────────── -->
+  <nav id="main-nav">
+    <div class="container nav-inner">
+      <a href="#" class="nav-wordmark">Bala Kumaran</a>
       <ul class="nav-links">
         <li><a href="#projects">Work</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#philosophy">About</a></li>
+        <li><a href="#footer">Contact</a></li>
       </ul>
+      <button class="nav-hamburger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
   </nav>
 
-  <!-- ─── Hero ─────────────────────────────────────────────────────────── -->
-  <section id="hero">
+  <!-- ─── HERO ──────────────────────────────────────────────────────────── -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow hero-enter">Founder · Kerala, India</p>
+
+      <h1 class="hero-h1">
+        <span class="line-bold" id="name-bold">
+          <span class="char">B</span><span class="char">a</span><span class="char">l</span><span class="char">a</span>
+        </span>
+        <span class="line-light" id="name-light">
+          <span class="char">K</span><span class="char">u</span><span class="char">m</span><span class="char">a</span><span class="char">r</span><span class="char">a</span><span class="char">n</span>
+        </span>
+      </h1>
+
+      <p class="hero-tagline hero-enter">
+        Building ventures at the intersection of design, AI, and product.
+      </p>
+
+      <div class="hero-ctas hero-enter">
+        <a href="#projects" class="btn-primary">See the work</a>
+        <a href="mailto:hello@91pixels.com" class="btn-text">hello@91pixels.com →</a>
+      </div>
+    </div>
+
+    <!-- Hero bottom iridescent divider -->
+    <div class="iridescent-divider" id="hero-divider"></div>
+  </section>
+
+  <!-- ─── SKILLS TICKER ─────────────────────────────────────────────────── -->
+  <section class="ticker" aria-label="Skills">
+    <!-- Row 1 — forward -->
+    <div class="ticker-row">
+      <div class="ticker-track" aria-hidden="true">
+        <!-- Duplicated for seamless loop -->
+        <span class="ticker-item">UX Design</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Product Strategy</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">AI Integration</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Brand Identity</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Design Systems</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Web Apps</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">MVP Architecture</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">UX Design</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Product Strategy</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">AI Integration</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Brand Identity</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Design Systems</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Web Apps</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">MVP Architecture</span><span class="ticker-sep">·</span>
+      </div>
+    </div>
+
+    <!-- Row 2 — reverse -->
+    <div class="ticker-row">
+      <div class="ticker-track ticker-track--reverse" aria-hidden="true">
+        <span class="ticker-item">Framer</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Figma</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">GSAP</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">React</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Webflow</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Claude API</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Cloudflare</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Lottie</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Framer</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Figma</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">GSAP</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">React</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Webflow</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Claude API</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Cloudflare</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Lottie</span><span class="ticker-sep">·</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── STATS BAR ──────────────────────────────────────────────────────── -->
+  <section class="stats" id="stats">
     <div class="container">
-      <div class="content hero-inner">
-        <p class="hero-eyebrow fade-up">Founder · Kerala, India</p>
-        <h1 class="hero-h1 fade-up" style="transition-delay: 0.08s">
-          <span class="line-a">Bala</span>
-          <span class="line-b">Kumaran</span>
-        </h1>
-        <p class="hero-tagline fade-up" style="transition-delay: 0.16s">
-          Building ventures at the intersection of design, AI, and product.
-        </p>
-        <div class="hero-ctas fade-up" style="transition-delay: 0.24s">
-          <a href="#projects" class="btn-gold">See the work</a>
-          <a href="mailto:hello@91pixels.com" class="link-muted">
-            hello@91pixels.com
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      <div class="stats-row">
+        <div class="stat reveal">
+          <span class="stat-number" data-target="11" data-suffix="+">11+</span>
+          <span class="stat-label">Years of Craft</span>
+        </div>
+        <div class="stat reveal">
+          <span class="stat-number" data-target="7" data-suffix="">7</span>
+          <span class="stat-label">Verticals Built</span>
+        </div>
+        <div class="stat reveal">
+          <span class="stat-number" data-target="40" data-suffix="+">40+</span>
+          <span class="stat-label">Projects Shipped</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats bottom iridescent divider -->
+    <div class="iridescent-divider" id="stats-divider" style="margin-top: 80px;"></div>
+  </section>
+
+  <!-- ─── SERVICES ─────────────────────────────────────────────────────── -->
+  <section class="services" id="services">
+    <div class="container">
+      <p class="section-label section-label--dark reveal">What I Build</p>
+      <ul class="services-list">
+        <li class="services-item reveal">
+          <span class="services-num">01</span>
+          <span class="services-title">Product Design &amp; UX</span>
+          <span class="services-arrow">→</span>
+        </li>
+        <li class="services-item reveal">
+          <span class="services-num">02</span>
+          <span class="services-title">AI Product Integration</span>
+          <span class="services-arrow">→</span>
+        </li>
+        <li class="services-item reveal">
+          <span class="services-num">03</span>
+          <span class="services-title">Brand Identity &amp; Systems</span>
+          <span class="services-arrow">→</span>
+        </li>
+        <li class="services-item reveal">
+          <span class="services-num">04</span>
+          <span class="services-title">Digital Experience &amp; Web</span>
+          <span class="services-arrow">→</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ─── PROJECTS ──────────────────────────────────────────────────────── -->
+  <section class="projects" id="projects">
+    <div class="container">
+      <p class="section-label reveal">Selected Ventures</p>
+      <div class="projects-grid">
+
+        <div class="project-card reveal">
+          <span class="project-tag">AI · Directory</span>
+          <h3 class="project-title">Scout</h3>
+          <p class="project-desc">An AI API directory and blueprint advisor — helping builders find, compare, and integrate the right AI APIs for their stack.</p>
+          <a href="https://scout-3qu.pages.dev/" target="_blank" rel="noopener" class="project-link">
+            scout-3qu.pages.dev <span class="arrow">→</span>
           </a>
         </div>
+
+        <div class="project-card reveal">
+          <span class="project-tag">Venture Group</span>
+          <h3 class="project-title">NinonepixGlobal</h3>
+          <p class="project-desc">A venture group at the frontier of design-led product development — building and backing ideas that deserve to exist.</p>
+          <a href="https://ninonepixglobal.pages.dev/" target="_blank" rel="noopener" class="project-link">
+            ninonepixglobal.pages.dev <span class="arrow">→</span>
+          </a>
+        </div>
+
+        <div class="project-card reveal">
+          <span class="project-tag">Design Studio</span>
+          <h3 class="project-title">91pixels</h3>
+          <p class="project-desc">A design studio that obsesses over craft — brand identity, product design, and digital experiences built to premium standards.</p>
+          <a href="https://91pixels.com" target="_blank" rel="noopener" class="project-link">
+            91pixels.com <span class="arrow">→</span>
+          </a>
+        </div>
+
       </div>
     </div>
   </section>
 
-  <!-- ─── Projects ─────────────────────────────────────────────────────── -->
-  <section id="projects">
+  <!-- ─── TESTIMONIALS ──────────────────────────────────────────────────── -->
+  <section class="testimonials" id="testimonials">
     <div class="container">
-      <div class="content">
-        <p class="section-label fade-up">Selected Ventures</p>
-        <div class="projects-grid">
+      <p class="section-label section-label--dark reveal">Kind Words</p>
+      <div class="testimonial-card reveal">
+        <svg class="testimonial-quote-icon" width="48" height="36" viewBox="0 0 48 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M0 36V22.5C0 14.1 3.9 7.5 11.7 2.7L15.3 7.2C11.7 9.6 9.6 12.3 9 15.3H18V36H0ZM27 36V22.5C27 14.1 30.9 7.5 38.7 2.7L42.3 7.2C38.7 9.6 36.6 12.3 36 15.3H45V36H27Z" fill="#F5F3EF"/>
+        </svg>
+        <p class="testimonial-text">
+          "Working with Bala is like having a founder, designer, and product thinker in one room. The output is always three steps ahead."
+        </p>
+        <p class="testimonial-attribution">— A founder, somewhere in the world</p>
+      </div>
+    </div>
+  </section>
 
-          <!-- Scout -->
-          <div class="project-card fade-up" style="transition-delay: 0.05s">
-            <div class="project-card-header">
-              <span class="project-tag">AI · Directory</span>
-              <span class="project-icon">⚡</span>
-            </div>
-            <h3>Scout</h3>
-            <p>An AI API directory and blueprint advisor — helping builders find, compare, and integrate the right AI APIs for their stack.</p>
-            <a href="https://scout-3qu.pages.dev/" class="project-link" target="_blank" rel="noopener">
-              scout-3qu.pages.dev
-              <svg viewBox="0 0 16 16"><path d="M4 12L12 4M6 4h6v6"/></svg>
-            </a>
+  <!-- ─── PHILOSOPHY ────────────────────────────────────────────────────── -->
+  <section class="philosophy" id="philosophy">
+    <div class="container">
+      <p class="section-label reveal">Philosophy</p>
+      <div class="philosophy-grid">
+        <div class="reveal">
+          <div class="philosophy-display">
+            <span class="d-bold">Blueprint</span>
+            <span class="d-light">before</span>
+            <span class="d-bold">build.</span>
           </div>
-
-          <!-- NinonepixGlobal -->
-          <div class="project-card fade-up" style="transition-delay: 0.12s">
-            <div class="project-card-header">
-              <span class="project-tag">Venture Group</span>
-              <span class="project-icon">🌐</span>
-            </div>
-            <h3>NinonepixGlobal</h3>
-            <p>A venture group at the frontier of design-led product development — building and backing ideas that deserve to exist.</p>
-            <a href="https://ninonepixglobal.pages.dev/" class="project-link" target="_blank" rel="noopener">
-              ninonepixglobal.pages.dev
-              <svg viewBox="0 0 16 16"><path d="M4 12L12 4M6 4h6v6"/></svg>
-            </a>
-          </div>
-
-          <!-- 91pixels -->
-          <div class="project-card fade-up" style="transition-delay: 0.19s">
-            <div class="project-card-header">
-              <span class="project-tag">Design Studio</span>
-              <span class="project-icon">✦</span>
-            </div>
-            <h3>91pixels</h3>
-            <p>A design studio that obsesses over craft — brand identity, product design, and digital experiences built to premium standards.</p>
-            <a href="https://91pixels.com/" class="project-link" target="_blank" rel="noopener">
-              91pixels.com
-              <svg viewBox="0 0 16 16"><path d="M4 12L12 4M6 4h6v6"/></svg>
-            </a>
-          </div>
-
+        </div>
+        <div class="philosophy-body reveal">
+          <p>Good product is never accidental. Every venture starts with a blueprint — a clear map of the problem, the wedge, and the moment of delight. Only then does building begin.</p>
+          <p>From Kerala, I build and back companies at the intersection of design precision and AI capability. 91pixels brings craft to brands. Scout maps the AI landscape. NinonepixGlobal is the holding force.</p>
+          <p>The standard is always the same: if it ships, it should be something worth being proud of.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ─── About ─────────────────────────────────────────────────────────── -->
-  <section id="about">
+  <!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
+  <footer id="footer">
     <div class="container">
-      <div class="content">
-        <p class="section-label fade-up">Philosophy</p>
-        <div class="about-grid">
-          <div class="fade-up" style="transition-delay: 0.05s">
-            <h2 class="about-heading">Blueprint<br><em>before</em><br>build.</h2>
-          </div>
-          <div class="about-body fade-up" style="transition-delay: 0.12s">
-            <p>
-              Good product is never accidental. <strong>Every venture starts with a blueprint</strong> — a clear map of the problem, the wedge, and the moment of delight. Only then does the building begin.
-            </p>
-            <p>
-              From Kerala, I build and back companies that sit at the intersection of <strong>design precision and AI capability</strong>. 91pixels brings craft to brands and products. Scout maps the AI landscape for builders. NinonepixGlobal is the holding force behind it all.
-            </p>
-            <p>
-              The standard is always the same: if it ships, it should be something worth being proud of.
-            </p>
-          </div>
-        </div>
+      <div class="footer-inner">
+        <a href="mailto:hello@91pixels.com" class="footer-email">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M14.4 0H1.6C0.72 0 0.008 0.72 0.008 1.6L0 10.4C0 11.28 0.72 12 1.6 12H14.4C15.28 12 16 11.28 16 10.4V1.6C16 0.72 15.28 0 14.4 0ZM14.4 3.2L8 7.2L1.6 3.2V1.6L8 5.6L14.4 1.6V3.2Z" fill="#121212"/>
+          </svg>
+          hello@91pixels.com
+        </a>
+        <p class="footer-copy">© 2026 Bala Kumaran</p>
       </div>
-    </div>
-  </section>
-
-  <!-- ─── Footer ────────────────────────────────────────────────────────── -->
-  <footer id="contact">
-    <div class="container">
-      <a href="mailto:hello@91pixels.com" class="footer-email">
-        <svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="1" y="1" width="18" height="14" rx="2"/><path d="M1 4l9 6 9-6"/></svg>
-        hello@91pixels.com
-      </a>
-      <p class="footer-copy">© 2026 Bala Kumaran · All rights reserved</p>
     </div>
   </footer>
 
+  <!-- ─── Animation Libraries ───────────────────────────────────────────── -->
+  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+
   <script>
-  (() => {
-    'use strict';
+    // ─── Reduced motion check ────────────────────────────────────────────
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* ─── WebGL Aurora Shader ──────────────────────────────────────────── */
-    const canvas = document.getElementById('gl-canvas');
+    // ─── GSAP plugin registration ────────────────────────────────────────
+    gsap.registerPlugin(ScrollTrigger);
 
-    const VERT = `
-      attribute vec4 a_pos;
-      void main() { gl_Position = a_pos; }
-    `;
-
-    const FRAG = `
-      precision highp float;
-      uniform float u_time;
-      uniform vec2  u_res;
-      uniform vec2  u_mouse;
-
-      /* ── Simplex Noise 2D ── */
-      vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
-
-      float snoise(vec2 v) {
-        const vec4 C = vec4(0.211324865405187, 0.366025403784439,
-                            -0.577350269189626, 0.024390243902439);
-        vec2 i  = floor(v + dot(v, C.yy));
-        vec2 x0 = v - i + dot(i, C.xx);
-        vec2 i1;
-        i1 = (x0.x > x0.y) ? vec2(1.0,0.0) : vec2(0.0,1.0);
-        vec4 x12 = x0.xyxy + C.xxzz;
-        x12.xy -= i1;
-        i = mod(i, 289.0);
-        vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
-        vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-        m = m*m; m = m*m;
-        vec3 x = 2.0*fract(p * C.www) - 1.0;
-        vec3 h = abs(x) - 0.5;
-        vec3 ox = floor(x + 0.5);
-        vec3 a0 = x - ox;
-        m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
-        vec3 g;
-        g.x  = a0.x  * x0.x  + h.x  * x0.y;
-        g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-        return 130.0 * dot(m, g);
-      }
-
-      /* ── fBm with rotation ── */
-      mat2 rot2(float a) {
-        float c = cos(a), s = sin(a);
-        return mat2(c, -s, s, c);
-      }
-
-      float fbm(vec2 p) {
-        float v = 0.0;
-        float a = 0.5;
-        vec2  shift = vec2(100.0);
-        mat2  R = rot2(0.5);
-        for (int i = 0; i < 5; i++) {
-          v += a * snoise(p);
-          p  = R * p * 2.0 + shift;
-          a *= 0.5;
-        }
-        return v;
-      }
-
-      /* ── Palette ── */
-      vec3 c1 = vec3(0.024, 0.063, 0.180); /* #06102E */
-      vec3 c2 = vec3(0.043, 0.235, 0.365); /* #0B3C5D */
-      vec3 c3 = vec3(0.796, 0.663, 0.416); /* #CBA96A */
-
-      void main() {
-        vec2 uv = gl_FragCoord.xy / u_res;
-        uv.y = 1.0 - uv.y;
-
-        /* Mouse influence — subtle aurora drift toward cursor */
-        vec2 mouse = u_mouse;
-        vec2 mOff = (mouse - 0.5) * 0.08;
-        uv += mOff * (1.0 - length(uv - 0.5));
-
-        /* Domain warp: q → r → f */
-        float t = u_time;
-        vec2 uvS = uv * 2.4;
-
-        vec2 q = vec2(
-          fbm(uvS + t * 0.30),
-          fbm(uvS + vec2(1.732, 0.948) + t * 0.25)
-        );
-
-        vec2 r = vec2(
-          fbm(uvS + 3.0 * q + vec2(1.7, 9.2) + t * 0.18),
-          fbm(uvS + 3.0 * q + vec2(8.3, 2.8) + t * 0.22)
-        );
-
-        float f = fbm(uvS + 2.8 * r);
-
-        /* Remap to [0,1] */
-        f = f * 0.5 + 0.5;
-
-        /* Color mix */
-        vec3 col;
-        if (f < 0.45) {
-          col = mix(c1, c2, f / 0.45);
-        } else if (f < 0.72) {
-          col = mix(c2, c1 * 0.7 + c2 * 0.3, (f - 0.45) / 0.27);
-        } else {
-          col = mix(c1 * 0.5 + c2 * 0.5, c3 * 0.55 + c2 * 0.45, (f - 0.72) / 0.28);
-        }
-
-        /* Gold wisps: high-frequency noise overlay */
-        float wisp = snoise(uvS * 3.5 - t * 0.4 + 4.0 * r);
-        wisp = smoothstep(0.68, 1.0, wisp);
-        col = mix(col, c3 * 0.7, wisp * 0.22);
-
-        /* Vignette */
-        vec2 vig = uv * (1.0 - uv.yx);
-        float v = vig.x * vig.y * 18.0;
-        v = pow(v, 0.38);
-        col *= v;
-
-        /* Slight brightness lift so it's not too dark */
-        col = col * 1.05 + 0.02;
-
-        gl_FragColor = vec4(col, 1.0);
-      }
-    `;
-
-    function initGL() {
-      const gl = canvas.getContext('webgl', { antialias: false, alpha: false });
-      if (!gl) return null;
-
-      function compile(type, src) {
-        const s = gl.createShader(type);
-        gl.shaderSource(s, src);
-        gl.compileShader(s);
-        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-          console.error('Shader error:', gl.getShaderInfoLog(s));
-          return null;
-        }
-        return s;
-      }
-
-      const vs = compile(gl.VERTEX_SHADER,   VERT);
-      const fs = compile(gl.FRAGMENT_SHADER, FRAG);
-      if (!vs || !fs) return null;
-
-      const prog = gl.createProgram();
-      gl.attachShader(prog, vs);
-      gl.attachShader(prog, fs);
-      gl.linkProgram(prog);
-      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-        console.error('Link error:', gl.getProgramInfoLog(prog));
-        return null;
-      }
-      gl.useProgram(prog);
-
-      /* Full-screen quad */
-      const buf = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-      const posLoc = gl.getAttribLocation(prog, 'a_pos');
-      gl.enableVertexAttribArray(posLoc);
-      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-      return {
-        gl,
-        uTime:  gl.getUniformLocation(prog, 'u_time'),
-        uRes:   gl.getUniformLocation(prog, 'u_res'),
-        uMouse: gl.getUniformLocation(prog, 'u_mouse'),
-      };
+    // ─── Lenis smooth scroll ─────────────────────────────────────────────
+    // autoRaf:false — GSAP ticker drives Lenis exclusively (no double RAF)
+    if (!prefersReducedMotion) {
+      const lenis = new Lenis({ autoRaf: false });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+      // Remeasure all ScrollTrigger positions after Lenis takes control
+      ScrollTrigger.refresh();
     }
 
-    const ctx = initGL();
-
-    if (!ctx) {
-      /* No WebGL — apply CSS fallback */
-      document.body.classList.add('no-webgl');
-    } else {
-      const { gl, uTime, uRes, uMouse } = ctx;
-
-      /* State */
-      let W = 0, H = 0;
-      let mouseX = 0.5, mouseY = 0.5;
-      let targetMouseX = 0.5, targetMouseY = 0.5;
-      let rafId = null;
-      let pausedAt = null;
-      let offset = 0;
-      let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const FROZEN_T = 1.5;
-      const DPR_CAP = 2;
-
-      /* Resize */
-      function resize() {
-        const dpr = Math.min(window.devicePixelRatio || 1, DPR_CAP);
-        W = Math.floor(window.innerWidth  * dpr);
-        H = Math.floor(window.innerHeight * dpr);
-        canvas.width  = W;
-        canvas.height = H;
-        gl.viewport(0, 0, W, H);
-      }
-      resize();
-      window.addEventListener('resize', resize, { passive: true });
-
-      /* Mouse */
-      window.addEventListener('mousemove', e => {
-        targetMouseX = e.clientX / window.innerWidth;
-        targetMouseY = 1.0 - (e.clientY / window.innerHeight);
-      }, { passive: true });
-
-      /* Render loop */
-      function render(now) {
-        rafId = requestAnimationFrame(render);
-
-        /* Smooth mouse */
-        mouseX += (targetMouseX - mouseX) * 0.04;
-        mouseY += (targetMouseY - mouseY) * 0.04;
-
-        let t;
-        if (reducedMotion) {
-          t = FROZEN_T;
-        } else {
-          t = (now * 0.001) - offset;
-        }
-
-        gl.uniform1f(uTime, t);
-        gl.uniform2f(uRes,  W, H);
-        gl.uniform2f(uMouse, mouseX, mouseY);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      }
-
-      /* Page Visibility API */
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          if (rafId !== null) {
-            cancelAnimationFrame(rafId);
-            rafId = null;
-            pausedAt = performance.now();
-          }
-        } else {
-          if (rafId === null) {
-            if (pausedAt !== null && !reducedMotion) {
-              offset += (performance.now() - pausedAt) * 0.001;
-              pausedAt = null;
-            }
-            rafId = requestAnimationFrame(render);
-          }
-        }
+    // ─── Hero entrance (on load, no scroll required) ─────────────────────
+    if (!prefersReducedMotion) {
+      gsap.to('.hero-enter', {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+        stagger: 0.12,
+        delay: 0.2
       });
-
-      /* Start */
-      rafId = requestAnimationFrame(render);
     }
 
-    /* ─── Scroll Fade-in ─────────────────────────────────────────────── */
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            e.target.classList.add('visible');
-            obs.unobserve(e.target);
+    // ─── Scroll reveals (gsap.to: CSS starts at opacity:0, GSAP drives to 1) ──
+    if (!prefersReducedMotion) {
+      gsap.utils.toArray('.reveal').forEach(el => {
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 90%',
+            toggleActions: 'play none none none'
           }
         });
-      }, { threshold: 0.12 });
-
-      document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
-    } else {
-      document.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
+      });
     }
 
-  })();
+    // ─── Stats counter ───────────────────────────────────────────────────
+    if (!prefersReducedMotion) {
+      document.querySelectorAll('.stat-number').forEach(el => {
+        const target = parseInt(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 80%',
+          onEnter: () => {
+            gsap.to({ val: 0 }, {
+              val: target,
+              duration: 1.4,
+              ease: 'power2.out',
+              onUpdate: function() {
+                el.textContent = Math.round(this.targets()[0].val) + suffix;
+              }
+            });
+          }
+        });
+      });
+    }
+
+    // ─── Nav scroll state ────────────────────────────────────────────────
+    const nav = document.getElementById('main-nav');
+    document.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', (window.scrollY || document.documentElement.scrollTop) > 40);
+    }, { passive: true });
+
+    // ─── Iridescent dividers — IntersectionObserver ──────────────────────
+    const dividerObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.iridescent-divider').forEach(el => {
+      dividerObserver.observe(el);
+    });
+
+    // ─── Hero name shimmer (anime.js) ────────────────────────────────────
+    if (!prefersReducedMotion) {
+      // Small delay to let page settle
+      setTimeout(() => {
+        anime({
+          targets: '.hero-h1 .char',
+          color: ['#a78bfa', '#60a5fa', '#34d399', '#fbbf24', '#121212'],
+          delay: anime.stagger(60),
+          duration: 2500,
+          easing: 'easeOutExpo'
+        });
+      }, 300);
+    }
+
+    // ─── Smooth scroll for nav links ─────────────────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const offsetTop = target.offsetTop - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'));
+          window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        }
+      });
+    });
   </script>
 </body>
 </html>
