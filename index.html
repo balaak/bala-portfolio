@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bala Kumaran — Founder & CEO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;475;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────────────────── */
+    :root {
+      --bg-void:        #06102E;
+      --bg-ocean:       #0B3C5D;
+      --gold:           #CBA96A;
+      --text-primary:   #F0EDE8;
+      --text-muted:     rgba(240, 237, 232, 0.45);
+      --gold-faint:     rgba(203, 169, 106, 0.12);
+      --gold-mid:       rgba(203, 169, 106, 0.35);
+      --glass-bg:       rgba(11, 60, 93, 0.18);
+      --glass-border:   rgba(203, 169, 106, 0.12);
+      --max-content:    960px;
+      --max-container:  1280px;
+      --nav-h:          64px;
+    }
+
+    /* ─── Reset ─────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg-void);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* ─── Grain Overlay ─────────────────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.04;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 300px 300px;
+    }
+
+    /* ─── WebGL Canvas ──────────────────────────────────────────────────── */
+    #gl-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* ─── Layout Helpers ─────────────────────────────────────────────────── */
+    .container {
+      max-width: var(--max-container);
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+    .content {
+      max-width: var(--max-content);
+      margin: 0 auto;
+    }
+
+    /* ─── Nav ────────────────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+    }
+
+    nav .container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      line-height: 1;
+      border: 1.5px solid var(--gold-mid);
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .nav-logo:hover {
+      background: var(--gold-faint);
+      border-color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+
+    /* ─── Hero ───────────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      padding-top: var(--nav-h);
+    }
+
+    .hero-inner {
+      padding: 60px 0 80px;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-variant: small-caps;
+      color: var(--gold);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 32px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.6;
+    }
+
+    .hero-h1 {
+      font-size: clamp(60px, 9vw, 120px);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      margin-bottom: 36px;
+    }
+    .hero-h1 .line-a {
+      display: block;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .hero-h1 .line-b {
+      display: block;
+      font-weight: 200;
+      font-style: italic;
+      color: var(--text-primary);
+      opacity: 0.88;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 1.6vw, 1.2rem);
+      font-weight: 300;
+      color: var(--text-muted);
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 52px;
+      letter-spacing: 0.01em;
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 1.5px solid var(--gold);
+      color: var(--gold);
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .btn-gold:hover {
+      background: var(--gold);
+      color: var(--bg-void);
+    }
+
+    .link-muted {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .link-muted:hover { color: var(--text-primary); }
+
+    /* ─── Section shared ─────────────────────────────────────────────────── */
+    section {
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-variant: small-caps;
+      color: var(--gold);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 80px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.35;
+    }
+
+    /* ─── Projects ───────────────────────────────────────────────────────── */
+    #projects {
+      padding: 120px 0;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 36px 32px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      cursor: default;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(203, 169, 106, 0.38);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(203, 169, 106, 0.12);
+    }
+
+    .project-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .project-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(203, 169, 106, 0.1);
+      border: 1px solid rgba(203, 169, 106, 0.18);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .project-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(203, 169, 106, 0.08);
+      border: 1px solid rgba(203, 169, 106, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .project-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+
+    .project-card p {
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin-top: auto;
+      transition: gap 0.2s;
+    }
+    .project-link:hover { gap: 10px; }
+    .project-link svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.2s;
+    }
+    .project-card:hover .project-link svg {
+      transform: translate(2px, -2px);
+    }
+
+    /* ─── About ──────────────────────────────────────────────────────────── */
+    #about {
+      padding: 120px 0;
+      border-top: 1px solid rgba(240, 237, 232, 0.06);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .about-heading {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+    }
+    .about-heading em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--gold);
+    }
+
+    .about-body {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .about-body p {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+    .about-body p strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* ─── Footer ─────────────────────────────────────────────────────────── */
+    footer {
+      position: relative;
+      z-index: 2;
+      padding: 48px 0;
+      border-top: 1px solid rgba(240, 237, 232, 0.06);
+    }
+    footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-email {
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 475;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s;
+    }
+    .footer-email:hover { opacity: 0.75; }
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── Dividers / Decoration ──────────────────────────────────────────── */
+    .section-divider {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, rgba(203,169,106,0.3), transparent);
+      margin: 0 auto 64px;
+    }
+
+    /* ─── No-WebGL fallback ──────────────────────────────────────────────── */
+    body.no-webgl {
+      background: linear-gradient(135deg, #06102E 0%, #0B3C5D 60%, #06102E 100%);
+    }
+    body.no-webgl #gl-canvas { display: none; }
+
+    /* ─── Responsive ─────────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .projects-grid {
+        grid-template-columns: 1fr;
+        max-width: 480px;
+      }
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 0 20px; }
+      nav .container { padding: 0 20px; }
+      .nav-links { gap: 24px; }
+      #projects { padding: 80px 0; }
+      #about { padding: 80px 0; }
+      .hero-inner { padding: 40px 0 60px; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links { gap: 16px; }
+      .nav-links li:first-child { display: none; }
+      .hero-ctas { flex-direction: column; align-items: flex-start; gap: 20px; }
+    }
+
+    /* ─── Scroll fade-in animation ───────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- WebGL Aurora Canvas -->
+  <canvas id="gl-canvas" aria-hidden="true"></canvas>
+
+  <!-- ─── Nav ──────────────────────────────────────────────────────────── -->
+  <nav>
+    <div class="container">
+      <a href="#" class="nav-logo" aria-label="Bala Kumaran — Home">BK</a>
+      <ul class="nav-links">
+        <li><a href="#projects">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ─── Hero ─────────────────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="container">
+      <div class="content hero-inner">
+        <p class="hero-eyebrow fade-up">Founder · Kerala, India</p>
+        <h1 class="hero-h1 fade-up" style="transition-delay: 0.08s">
+          <span class="line-a">Bala</span>
+          <span class="line-b">Kumaran</span>
+        </h1>
+        <p class="hero-tagline fade-up" style="transition-delay: 0.16s">
+          Building ventures at the intersection of design, AI, and product.
+        </p>
+        <div class="hero-ctas fade-up" style="transition-delay: 0.24s">
+          <a href="#projects" class="btn-gold">See the work</a>
+          <a href="mailto:hello@91pixels.com" class="link-muted">
+            hello@91pixels.com
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Projects ─────────────────────────────────────────────────────── -->
+  <section id="projects">
+    <div class="container">
+      <div class="content">
+        <p class="section-label fade-up">Selected Ventures</p>
+        <div class="projects-grid">
+
+          <!-- Scout -->
+          <div class="project-card fade-up" style="transition-delay: 0.05s">
+            <div class="project-card-header">
+              <span class="project-tag">AI · Directory</span>
+              <span class="project-icon">⚡</span>
+            </div>
+            <h3>Scout</h3>
+            <p>An AI API directory and blueprint advisor — helping builders find, compare, and integrate the right AI APIs for their stack.</p>
+            <a href="https://scout-3qu.pages.dev/" class="project-link" target="_blank" rel="noopener">
+              scout-3qu.pages.dev
+              <svg viewBox="0 0 16 16"><path d="M4 12L12 4M6 4h6v6"/></svg>
+            </a>
+          </div>
+
+          <!-- NinonepixGlobal -->
+          <div class="project-card fade-up" style="transition-delay: 0.12s">
+            <div class="project-card-header">
+              <span class="project-tag">Venture Group</span>
+              <span class="project-icon">🌐</span>
+            </div>
+            <h3>NinonepixGlobal</h3>
+            <p>A venture group at the frontier of design-led product development — building and backing ideas that deserve to exist.</p>
+            <a href="https://ninonepixglobal.pages.dev/" class="project-link" target="_blank" rel="noopener">
+              ninonepixglobal.pages.dev
+              <svg viewBox="0 0 16 16"><path d="M4 12L12 4M6 4h6v6"/></svg>
+            </a>
+          </div>
+
+          <!-- 91pixels -->
+          <div class="project-card fade-up" style="transition-delay: 0.19s">
+            <div class="project-card-header">
+              <span class="project-tag">Design Studio</span>
+              <span class="project-icon">✦</span>
+            </div>
+            <h3>91pixels</h3>
+            <p>A design studio that obsesses over craft — brand identity, product design, and digital experiences built to premium standards.</p>
+            <a href="https://91pixels.com/" class="project-link" target="_blank" rel="noopener">
+              91pixels.com
+              <svg viewBox="0 0 16 16"><path d="M4 12L12 4M6 4h6v6"/></svg>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── About ─────────────────────────────────────────────────────────── -->
+  <section id="about">
+    <div class="container">
+      <div class="content">
+        <p class="section-label fade-up">Philosophy</p>
+        <div class="about-grid">
+          <div class="fade-up" style="transition-delay: 0.05s">
+            <h2 class="about-heading">Blueprint<br><em>before</em><br>build.</h2>
+          </div>
+          <div class="about-body fade-up" style="transition-delay: 0.12s">
+            <p>
+              Good product is never accidental. <strong>Every venture starts with a blueprint</strong> — a clear map of the problem, the wedge, and the moment of delight. Only then does the building begin.
+            </p>
+            <p>
+              From Kerala, I build and back companies that sit at the intersection of <strong>design precision and AI capability</strong>. 91pixels brings craft to brands and products. Scout maps the AI landscape for builders. NinonepixGlobal is the holding force behind it all.
+            </p>
+            <p>
+              The standard is always the same: if it ships, it should be something worth being proud of.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ────────────────────────────────────────────────────────── -->
+  <footer id="contact">
+    <div class="container">
+      <a href="mailto:hello@91pixels.com" class="footer-email">
+        <svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="1" y="1" width="18" height="14" rx="2"/><path d="M1 4l9 6 9-6"/></svg>
+        hello@91pixels.com
+      </a>
+      <p class="footer-copy">© 2026 Bala Kumaran · All rights reserved</p>
+    </div>
+  </footer>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ─── WebGL Aurora Shader ──────────────────────────────────────────── */
+    const canvas = document.getElementById('gl-canvas');
+
+    const VERT = `
+      attribute vec4 a_pos;
+      void main() { gl_Position = a_pos; }
+    `;
+
+    const FRAG = `
+      precision highp float;
+      uniform float u_time;
+      uniform vec2  u_res;
+      uniform vec2  u_mouse;
+
+      /* ── Simplex Noise 2D ── */
+      vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+
+      float snoise(vec2 v) {
+        const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+                            -0.577350269189626, 0.024390243902439);
+        vec2 i  = floor(v + dot(v, C.yy));
+        vec2 x0 = v - i + dot(i, C.xx);
+        vec2 i1;
+        i1 = (x0.x > x0.y) ? vec2(1.0,0.0) : vec2(0.0,1.0);
+        vec4 x12 = x0.xyxy + C.xxzz;
+        x12.xy -= i1;
+        i = mod(i, 289.0);
+        vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
+        vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+        m = m*m; m = m*m;
+        vec3 x = 2.0*fract(p * C.www) - 1.0;
+        vec3 h = abs(x) - 0.5;
+        vec3 ox = floor(x + 0.5);
+        vec3 a0 = x - ox;
+        m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
+        vec3 g;
+        g.x  = a0.x  * x0.x  + h.x  * x0.y;
+        g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+        return 130.0 * dot(m, g);
+      }
+
+      /* ── fBm with rotation ── */
+      mat2 rot2(float a) {
+        float c = cos(a), s = sin(a);
+        return mat2(c, -s, s, c);
+      }
+
+      float fbm(vec2 p) {
+        float v = 0.0;
+        float a = 0.5;
+        vec2  shift = vec2(100.0);
+        mat2  R = rot2(0.5);
+        for (int i = 0; i < 5; i++) {
+          v += a * snoise(p);
+          p  = R * p * 2.0 + shift;
+          a *= 0.5;
+        }
+        return v;
+      }
+
+      /* ── Palette ── */
+      vec3 c1 = vec3(0.024, 0.063, 0.180); /* #06102E */
+      vec3 c2 = vec3(0.043, 0.235, 0.365); /* #0B3C5D */
+      vec3 c3 = vec3(0.796, 0.663, 0.416); /* #CBA96A */
+
+      void main() {
+        vec2 uv = gl_FragCoord.xy / u_res;
+        uv.y = 1.0 - uv.y;
+
+        /* Mouse influence — subtle aurora drift toward cursor */
+        vec2 mouse = u_mouse;
+        vec2 mOff = (mouse - 0.5) * 0.08;
+        uv += mOff * (1.0 - length(uv - 0.5));
+
+        /* Domain warp: q → r → f */
+        float t = u_time;
+        vec2 uvS = uv * 2.4;
+
+        vec2 q = vec2(
+          fbm(uvS + t * 0.30),
+          fbm(uvS + vec2(1.732, 0.948) + t * 0.25)
+        );
+
+        vec2 r = vec2(
+          fbm(uvS + 3.0 * q + vec2(1.7, 9.2) + t * 0.18),
+          fbm(uvS + 3.0 * q + vec2(8.3, 2.8) + t * 0.22)
+        );
+
+        float f = fbm(uvS + 2.8 * r);
+
+        /* Remap to [0,1] */
+        f = f * 0.5 + 0.5;
+
+        /* Color mix */
+        vec3 col;
+        if (f < 0.45) {
+          col = mix(c1, c2, f / 0.45);
+        } else if (f < 0.72) {
+          col = mix(c2, c1 * 0.7 + c2 * 0.3, (f - 0.45) / 0.27);
+        } else {
+          col = mix(c1 * 0.5 + c2 * 0.5, c3 * 0.55 + c2 * 0.45, (f - 0.72) / 0.28);
+        }
+
+        /* Gold wisps: high-frequency noise overlay */
+        float wisp = snoise(uvS * 3.5 - t * 0.4 + 4.0 * r);
+        wisp = smoothstep(0.68, 1.0, wisp);
+        col = mix(col, c3 * 0.7, wisp * 0.22);
+
+        /* Vignette */
+        vec2 vig = uv * (1.0 - uv.yx);
+        float v = vig.x * vig.y * 18.0;
+        v = pow(v, 0.38);
+        col *= v;
+
+        /* Slight brightness lift so it's not too dark */
+        col = col * 1.05 + 0.02;
+
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `;
+
+    function initGL() {
+      const gl = canvas.getContext('webgl', { antialias: false, alpha: false });
+      if (!gl) return null;
+
+      function compile(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+          console.error('Shader error:', gl.getShaderInfoLog(s));
+          return null;
+        }
+        return s;
+      }
+
+      const vs = compile(gl.VERTEX_SHADER,   VERT);
+      const fs = compile(gl.FRAGMENT_SHADER, FRAG);
+      if (!vs || !fs) return null;
+
+      const prog = gl.createProgram();
+      gl.attachShader(prog, vs);
+      gl.attachShader(prog, fs);
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        console.error('Link error:', gl.getProgramInfoLog(prog));
+        return null;
+      }
+      gl.useProgram(prog);
+
+      /* Full-screen quad */
+      const buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+      const posLoc = gl.getAttribLocation(prog, 'a_pos');
+      gl.enableVertexAttribArray(posLoc);
+      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+      return {
+        gl,
+        uTime:  gl.getUniformLocation(prog, 'u_time'),
+        uRes:   gl.getUniformLocation(prog, 'u_res'),
+        uMouse: gl.getUniformLocation(prog, 'u_mouse'),
+      };
+    }
+
+    const ctx = initGL();
+
+    if (!ctx) {
+      /* No WebGL — apply CSS fallback */
+      document.body.classList.add('no-webgl');
+    } else {
+      const { gl, uTime, uRes, uMouse } = ctx;
+
+      /* State */
+      let W = 0, H = 0;
+      let mouseX = 0.5, mouseY = 0.5;
+      let targetMouseX = 0.5, targetMouseY = 0.5;
+      let rafId = null;
+      let pausedAt = null;
+      let offset = 0;
+      let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const FROZEN_T = 1.5;
+      const DPR_CAP = 2;
+
+      /* Resize */
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, DPR_CAP);
+        W = Math.floor(window.innerWidth  * dpr);
+        H = Math.floor(window.innerHeight * dpr);
+        canvas.width  = W;
+        canvas.height = H;
+        gl.viewport(0, 0, W, H);
+      }
+      resize();
+      window.addEventListener('resize', resize, { passive: true });
+
+      /* Mouse */
+      window.addEventListener('mousemove', e => {
+        targetMouseX = e.clientX / window.innerWidth;
+        targetMouseY = 1.0 - (e.clientY / window.innerHeight);
+      }, { passive: true });
+
+      /* Render loop */
+      function render(now) {
+        rafId = requestAnimationFrame(render);
+
+        /* Smooth mouse */
+        mouseX += (targetMouseX - mouseX) * 0.04;
+        mouseY += (targetMouseY - mouseY) * 0.04;
+
+        let t;
+        if (reducedMotion) {
+          t = FROZEN_T;
+        } else {
+          t = (now * 0.001) - offset;
+        }
+
+        gl.uniform1f(uTime, t);
+        gl.uniform2f(uRes,  W, H);
+        gl.uniform2f(uMouse, mouseX, mouseY);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      }
+
+      /* Page Visibility API */
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          if (rafId !== null) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+            pausedAt = performance.now();
+          }
+        } else {
+          if (rafId === null) {
+            if (pausedAt !== null && !reducedMotion) {
+              offset += (performance.now() - pausedAt) * 0.001;
+              pausedAt = null;
+            }
+            rafId = requestAnimationFrame(render);
+          }
+        }
+      });
+
+      /* Start */
+      rafId = requestAnimationFrame(render);
+    }
+
+    /* ─── Scroll Fade-in ─────────────────────────────────────────────── */
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+    } else {
+      document.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
+    }
+
+  })();
+  </script>
+</body>
+</html>
