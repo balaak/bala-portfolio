@@ -126,6 +126,14 @@
       opacity: 1;
     }
 
+    /* Hero divider sits flush at the viewport bottom, not inline with content */
+    #hero-divider {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
     @keyframes shimmer {
       0%   { background-position: 0% center; }
       100% { background-position: -200% center; }
@@ -204,6 +212,7 @@
 
     /* ─── HERO ───────────────────────────────────────────────────────────── */
     .hero {
+      position: relative;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -250,6 +259,9 @@
 
     .hero-h1 .char {
       display: inline-block;
+      opacity: 0;
+      transform: translateY(28px);
+      will-change: opacity, transform;
     }
 
     .hero-tagline {
@@ -319,10 +331,12 @@
     .ticker-track {
       display: flex;
       animation: ticker 28s linear infinite;
+      animation-play-state: paused;
     }
 
     .ticker-track--reverse {
       animation: ticker-reverse 24s linear infinite;
+      animation-play-state: paused;
     }
 
     @keyframes ticker {
@@ -466,6 +480,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
+      perspective: 800px;
     }
 
     .project-card {
@@ -473,11 +488,12 @@
       border: 1px solid rgba(18, 18, 18, 0.1);
       border-radius: 12px;
       padding: 36px 28px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
 
     .project-card:hover {
-      transform: translateY(-4px);
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
       border-color: rgba(18, 18, 18, 0.2);
     }
@@ -660,6 +676,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .reveal, .hero-enter { opacity: 1; transform: none; }
+      .hero-h1 .char { opacity: 1; transform: none; }
     }
 
     /* ─── Responsive ─────────────────────────────────────────────────────── */
@@ -723,9 +740,34 @@
         transition-duration: 0.01ms !important;
       }
     }
+
+    /* ─── Preloader ─────────────────────────────────────────────────────── */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: #FAF9F7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #preloader-count {
+      font-family: 'Sora', sans-serif;
+      font-size: 8rem;
+      font-weight: 700;
+      color: #121212;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
   </style>
 </head>
 <body>
+
+  <!-- ─── PRELOADER ───────────────────────────────────────────────────── -->
+  <div id="preloader">
+    <span id="preloader-count">0</span>
+  </div>
 
   <!-- ─── NAV ──────────────────────────────────────────────────────────── -->
   <nav id="main-nav">
@@ -983,15 +1025,68 @@
       ScrollTrigger.refresh();
     }
 
-    // ─── Hero entrance (on load, no scroll required) ─────────────────────
-    if (!prefersReducedMotion) {
+    // ─── Hero entrance (called after preloader exits) ─────────────────────
+    function runHeroEntrance() {
+      if (prefersReducedMotion) return;
+
+      // Eyebrow + tagline + CTAs slide in
       gsap.to('.hero-enter', {
         opacity: 1,
         y: 0,
         duration: 0.9,
         ease: 'power3.out',
         stagger: 0.12,
-        delay: 0.2
+        delay: 0.1
+      });
+
+      // Name letters stagger up, then iridescent shimmer
+      anime({
+        targets: '.hero-h1 .char',
+        opacity: [0, 1],
+        translateY: [28, 0],
+        delay: anime.stagger(40, { start: 200 }),
+        duration: 700,
+        easing: 'easeOutExpo',
+        complete: function() {
+          anime({
+            targets: '.hero-h1 .char',
+            color: ['#a78bfa', '#60a5fa', '#34d399', '#fbbf24', '#121212'],
+            delay: anime.stagger(60),
+            duration: 2500,
+            easing: 'easeOutExpo'
+          });
+        }
+      });
+    }
+
+    // ─── Preloader counter ────────────────────────────────────────────────
+    const preloader = document.getElementById('preloader');
+    const preloaderCount = document.getElementById('preloader-count');
+
+    if (prefersReducedMotion) {
+      preloader.style.display = 'none';
+      runHeroEntrance();
+    } else {
+      document.body.style.overflow = 'hidden';
+      const counter = { val: 0 };
+      anime({
+        targets: counter,
+        val: 100,
+        duration: 1800,
+        easing: 'easeInOutQuart',
+        update: function() {
+          preloaderCount.textContent = Math.round(counter.val);
+        },
+        complete: function() {
+          preloaderCount.textContent = '100';
+          preloader.style.transition = 'opacity 600ms ease';
+          preloader.style.opacity = '0';
+          setTimeout(function() {
+            preloader.style.display = 'none';
+            document.body.style.overflow = '';
+            runHeroEntrance();
+          }, 620);
+        }
       });
     }
 
@@ -1034,6 +1129,34 @@
       });
     }
 
+    // ─── Ticker marquee — build content so one set ≥ viewport, then start CSS anim ──
+    (() => {
+      const tracks = document.querySelectorAll('.ticker-track');
+      const vw = window.innerWidth || document.documentElement.clientWidth || 1440;
+
+      tracks.forEach(track => {
+        // Grab unique items from the first half (HTML ships 2 copies)
+        const all = Array.from(track.children);
+        const unique = all.slice(0, Math.floor(all.length / 2)).map(n => n.cloneNode(true));
+
+        // Rebuild: keep adding unique set until scrollWidth >= viewport
+        track.innerHTML = '';
+        let safety = 0;
+        do {
+          unique.forEach(n => track.appendChild(n.cloneNode(true)));
+          safety++;
+        } while (track.scrollWidth <= vw && safety < 20);
+
+        // Add one full duplicate — CSS translateX(-50%) now maps to exactly one set width
+        Array.from(track.children).forEach(n => track.appendChild(n.cloneNode(true)));
+
+        // Start animation (was paused until content was ready)
+        if (!prefersReducedMotion) {
+          track.style.animationPlayState = 'running';
+        }
+      });
+    })();
+
     // ─── Nav scroll state ────────────────────────────────────────────────
     const nav = document.getElementById('main-nav');
     document.addEventListener('scroll', () => {
@@ -1053,18 +1176,60 @@
       dividerObserver.observe(el);
     });
 
-    // ─── Hero name shimmer (anime.js) ────────────────────────────────────
+    // ─── Project card 3D tilt ────────────────────────────────────────────
     if (!prefersReducedMotion) {
-      // Small delay to let page settle
-      setTimeout(() => {
-        anime({
-          targets: '.hero-h1 .char',
-          color: ['#a78bfa', '#60a5fa', '#34d399', '#fbbf24', '#121212'],
-          delay: anime.stagger(60),
-          duration: 2500,
-          easing: 'easeOutExpo'
+      document.querySelectorAll('.project-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dx = (e.clientX - cx) / (rect.width / 2);
+          const dy = (e.clientY - cy) / (rect.height / 2);
+          gsap.to(card, {
+            rotationY:  dx * 8,
+            rotationX: -dy * 6,
+            translateY: -6,
+            scale: 1.02,
+            boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
+            duration: 0.3,
+            ease: 'power2.out',
+            transformPerspective: 800
+          });
         });
-      }, 300);
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, {
+            rotationY: 0,
+            rotationX: 0,
+            translateY: 0,
+            scale: 1,
+            boxShadow: '0 0px 0px rgba(0,0,0,0)',
+            duration: 0.6,
+            ease: 'elastic.out(1, 0.4)'
+          });
+        });
+      });
+    }
+
+    // ─── Magnetic buttons ────────────────────────────────────────────────
+    function makeMagnetic(el, strength = 0.35, maxMove = 8) {
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = (e.clientX - cx) * strength;
+        const dy = (e.clientY - cy) * strength;
+        const x = Math.max(-maxMove, Math.min(maxMove, dx));
+        const y = Math.max(-maxMove, Math.min(maxMove, dy));
+        gsap.to(el, { x, y, duration: 0.3, ease: 'power2.out' });
+      });
+      el.addEventListener('mouseleave', () => {
+        gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
+      });
+    }
+
+    if (!prefersReducedMotion) {
+      document.querySelectorAll('.btn-primary').forEach(el => makeMagnetic(el, 0.35, 8));
+      makeMagnetic(document.querySelector('.nav-wordmark'), 0.2, 4);
     }
 
     // ─── Smooth scroll for nav links ─────────────────────────────────────
