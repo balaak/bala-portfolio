@@ -1,0 +1,4 @@
+# Tooling / local-only
+.claude/
+.playwright-mcp/
+.DS_Store

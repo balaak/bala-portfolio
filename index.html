@@ -6,37 +6,81 @@
   <script>history.scrollRestoration = 'manual'; window.scrollTo(0, 0);</script>
   <title>Bala Kumaran — Founder · Designer · Builder</title>
   <meta name="description" content="Bala Kumaran — Founder, designer, and builder from Kerala, India. Building ventures at the intersection of design, AI, and product." />
+  <meta name="author" content="Bala Kumaran" />
+  <meta name="theme-color" content="#FAF9F7" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://balaak.github.io/bala-portfolio/" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Bala Kumaran" />
+  <meta property="og:title" content="Bala Kumaran — Founder · Designer · Builder" />
+  <meta property="og:description" content="Building ventures at the intersection of design, AI, and product. From Kerala, India." />
+  <meta property="og:url" content="https://balaak.github.io/bala-portfolio/" />
+  <meta property="og:image" content="https://balaak.github.io/bala-portfolio/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Bala Kumaran — Founder, Designer, Builder" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Bala Kumaran — Founder · Designer · Builder" />
+  <meta name="twitter:description" content="Building ventures at the intersection of design, AI, and product. From Kerala, India." />
+  <meta name="twitter:image" content="https://balaak.github.io/bala-portfolio/og-image.jpg" />
+  <meta name="twitter:image:alt" content="Bala Kumaran — Founder, Designer, Builder" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Bala Kumaran",
+    "jobTitle": "Founder, Designer & Builder",
+    "url": "https://balaak.github.io/bala-portfolio/",
+    "email": "hello@91pixels.com",
+    "address": { "@type": "PostalAddress", "addressRegion": "Kerala", "addressCountry": "IN" },
+    "worksFor": { "@type": "Organization", "name": "91pixels" },
+    "sameAs": [
+      "https://91pixels.com",
+      "https://ninonepixglobal.pages.dev/"
+    ]
+  }
+  </script>
 
   <!-- Preload critical fonts -->
-  <link rel="preload" href="/fonts/sora/sora-400.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="/fonts/sora/sora-700.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/sora/sora-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/sora/sora-700.woff2" as="font" type="font/woff2" crossorigin />
 
   <style>
     /* ─── Self-hosted Sora Font ─────────────────────────────────────────── */
     @font-face {
       font-family: 'Sora';
-      src: url('/fonts/sora/sora-300.woff2') format('woff2');
+      src: url('fonts/sora/sora-300.woff2') format('woff2');
       font-weight: 300;
       font-style: normal;
       font-display: swap;
     }
     @font-face {
       font-family: 'Sora';
-      src: url('/fonts/sora/sora-400.woff2') format('woff2');
+      src: url('fonts/sora/sora-400.woff2') format('woff2');
       font-weight: 400;
       font-style: normal;
       font-display: swap;
     }
     @font-face {
       font-family: 'Sora';
-      src: url('/fonts/sora/sora-600.woff2') format('woff2');
+      src: url('fonts/sora/sora-600.woff2') format('woff2');
       font-weight: 600;
       font-style: normal;
       font-display: swap;
     }
     @font-face {
       font-family: 'Sora';
-      src: url('/fonts/sora/sora-700.woff2') format('woff2');
+      src: url('fonts/sora/sora-700.woff2') format('woff2');
       font-weight: 700;
       font-style: normal;
       font-display: swap;
@@ -912,12 +956,51 @@
         padding: 60px 20px 80px;
       }
 
+      /* Mobile menu — full-screen overlay panel, toggled by hamburger */
       .nav-links {
-        display: none;
+        position: fixed;
+        inset: var(--nav-h) 0 0 0;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 36px;
+        background: rgba(250, 249, 247, 0.98);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-12px);
+        pointer-events: none;
+        transition: opacity 0.32s ease, transform 0.32s ease, visibility 0.32s;
+      }
+
+      #main-nav.menu-open .nav-links {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .nav-links a {
+        font-size: 1.5rem;
+        font-weight: 300;
+        color: var(--text-primary);
       }
 
       .nav-hamburger {
         display: flex;
+        z-index: 101;
+      }
+
+      /* Hamburger → X */
+      #main-nav.menu-open .nav-hamburger span:nth-child(1) {
+        transform: translateY(6.5px) rotate(45deg);
+      }
+      #main-nav.menu-open .nav-hamburger span:nth-child(2) {
+        opacity: 0;
+      }
+      #main-nav.menu-open .nav-hamburger span:nth-child(3) {
+        transform: translateY(-6.5px) rotate(-45deg);
       }
 
       .stats-row {
@@ -993,13 +1076,13 @@
   <nav id="main-nav">
     <div class="container nav-inner">
       <a href="#" class="nav-wordmark">Bala Kumaran</a>
-      <ul class="nav-links">
+      <ul class="nav-links" id="nav-menu">
         <li><a href="#projects">Work</a></li>
         <li><a href="#ai-content">AI Studio</a></li>
         <li><a href="#philosophy">About</a></li>
         <li><a href="#footer">Contact</a></li>
       </ul>
-      <button class="nav-hamburger" aria-label="Menu">
+      <button class="nav-hamburger" aria-label="Menu" aria-controls="nav-menu" aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
@@ -1457,6 +1540,20 @@
     document.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', (window.scrollY || document.documentElement.scrollTop) > 40);
     }, { passive: true });
+
+    // ─── Mobile menu toggle ──────────────────────────────────────────────
+    const hamburger = document.querySelector('.nav-hamburger');
+    if (hamburger) {
+      const setMenu = (open) => {
+        nav.classList.toggle('menu-open', open);
+        hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      };
+      hamburger.addEventListener('click', () => setMenu(!nav.classList.contains('menu-open')));
+      // Close when a menu link is tapped
+      nav.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+      // Close on Escape
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+    }
 
     // ─── Iridescent dividers — IntersectionObserver ──────────────────────
     const dividerObserver = new IntersectionObserver((entries) => {

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face { font-family:'Sora'; src:url('fonts/sora/sora-300.woff2') format('woff2'); font-weight:300; }
+  @font-face { font-family:'Sora'; src:url('fonts/sora/sora-600.woff2') format('woff2'); font-weight:600; }
+  @font-face { font-family:'Sora'; src:url('fonts/sora/sora-700.woff2') format('woff2'); font-weight:700; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1200px; height:630px; }
+  body {
+    background:#FAF9F7; color:#121212; overflow:hidden; position:relative;
+    font-family:'Sora', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap { padding:96px; height:100%; display:flex; flex-direction:column; justify-content:center; }
+  .eyebrow { font-weight:600; font-size:20px; letter-spacing:.2em; text-transform:uppercase; color:rgba(18,18,18,.55); margin-bottom:30px; }
+  h1 { font-size:132px; line-height:.88; letter-spacing:-.03em; margin-bottom:40px; }
+  h1 .b { font-weight:700; display:block; }
+  h1 .l { font-weight:300; font-style:italic; display:block; }
+  .tag { font-weight:300; font-size:31px; color:rgba(18,18,18,.64); max-width:780px; line-height:1.5; }
+  .mark { position:absolute; top:84px; right:96px; font-weight:700; font-size:22px; letter-spacing:.14em; color:#121212; }
+  .bar { position:absolute; left:0; right:0; bottom:0; height:9px;
+    background:linear-gradient(90deg,#a78bfa,#60a5fa,#34d399,#fbbf24,#f87171,#a78bfa); }
+</style>
+</head>
+<body>
+  <div class="mark">91PIXELS</div>
+  <div class="wrap">
+    <div class="eyebrow">Founder · Kerala, India</div>
+    <h1><span class="b">Bala</span><span class="l">Kumaran</span></h1>
+    <div class="tag">Building ventures at the intersection of design, AI &amp; product.</div>
+  </div>
+  <div class="bar"></div>
+</body>
+</html>
